@@ -1,10 +1,12 @@
+import { initMap } from "./map.";
+
 const MAP_X_LENGTH = 30
 const MAP_Y_LENGTH = 30
-const SNAKE_SPEED = 50 // millisecondes
+const SNAKE_SPEED = 60 // millisecondes
+const SNAKE_START_POSITION = [{x: 10, y: 10}]
 
-let MAP = []
 let BOOST = 0
-let SNAKE = [{x: 10, y: 10}]
+let SNAKE
 let DIRECTION = {x: 1, y: 0} // ex: [0, -1] going up
 let GAME_ACTIVE // intervall 
 
@@ -12,79 +14,66 @@ let GAME_ACTIVE // intervall
 
 function initGame() {
   console.log('--- SART ---');
-  
-  // fill MAP contant with map case
-  MAP = getInitMap(MAP_X_LENGTH, MAP_Y_LENGTH)
 
-  // create all map case in html
-  const game = document.querySelector('#game')
+  BOOST = 0
 
-  MAP.forEach(xEl => {
-    const line = document.createElement('div')
-    line.classList.add('line')
-    game.append(line)
-
-    xEl.forEach(yEl => {
-      const box = document.createElement('div')
-      box.classList.add('box', 'x'+yEl.x, 'y'+yEl.y)
-      line.append(box)
-    })
-  })
+  initMap(MAP_X_LENGTH, MAP_Y_LENGTH, 'game')
 
   // set snake
+  SNAKE = JSON.parse(JSON.stringify(SNAKE_START_POSITION))
   updateMapCase(SNAKE[0].x, SNAKE[0].y, 'snake')
   
-
   // set keyboard events
-  setKeyboardEvent()
+  document.addEventListener('keydown', keyboardEvent)
 
   // set boost
   setBoost()
- 
-
-  console.log(MAP);
 }
 
-function setKeyboardEvent() {
-  document.addEventListener('keydown', (event) => {
-    console.log('KEY');
-    switch (event.code) {
-      case 'ArrowUp':
-        DIRECTION.x = 0
-        DIRECTION.y = -1
-        break;
-      case 'ArrowDown':
-        DIRECTION.x = 0
-        DIRECTION.y = 1
-        break;
-      case 'ArrowLeft':
-        DIRECTION.x = -1
-        DIRECTION.y = 0
-        break;
-      case 'ArrowRight':
-        DIRECTION.x = 1
-        DIRECTION.y = 0
-        break;
-      case 'Space':
-        // pause game
-        if (GAME_ACTIVE) {
-          clearInterval(GAME_ACTIVE)
-          GAME_ACTIVE = undefined
-        }
-        break;
-    
-      default:
-        break;
-    }
+function keyboardEvent(event) {
+  if (!event) return false
+  console.log('event keyboard now');
 
-    // start game with arrows key
-    const keyCodeArrows = [37, 38, 39, 40]
-    if (!GAME_ACTIVE && keyCodeArrows.includes(event.keyCode)) {
-      startIntervall()
-    }
+  switch (event.code) {
+    case 'ArrowUp':
+      if (DIRECTION.x === 0 && DIRECTION.y === 1) break
+      DIRECTION.x = 0
+      DIRECTION.y = -1
+      break;
+    case 'ArrowDown':
+      if (DIRECTION.x === 0 && DIRECTION.y === -1) break
+      DIRECTION.x = 0
+      DIRECTION.y = 1
+      break;
+    case 'ArrowLeft':
+      if (DIRECTION.x === 1 && DIRECTION.y === 0) break
+      DIRECTION.x = -1
+      DIRECTION.y = 0
+      break;
+    case 'ArrowRight':
+      if (DIRECTION.x === -1 && DIRECTION.y === 0) break
+      DIRECTION.x = 1
+      DIRECTION.y = 0
+      break;
+    case 'Space':
+      // pause game
+      if (GAME_ACTIVE) {
+        clearInterval(GAME_ACTIVE)
+        GAME_ACTIVE = undefined
+      }
+      break;
+  
+    default:
+      break;
+  }
 
-    event.preventDefault();
-  }, true)
+  // start game with arrows key
+  const keyCodeArrows = [37, 38, 39, 40]
+  if (!GAME_ACTIVE && keyCodeArrows.includes(event.keyCode)) {
+    startIntervall()
+  }
+
+  event.preventDefault();
 }
 
 function startIntervall() {
@@ -93,13 +82,14 @@ function startIntervall() {
       const nextPosition = getSnakeNextPosition()
       const nextCase = document.querySelector(`.x${nextPosition.x}.y${nextPosition.y}`)
       const lastSnakePart = SNAKE[SNAKE.length-1]
-
+      
       if (nextCase.classList.contains('boost')) {
         BOOST++
         removeClassFromCase(nextPosition.x, nextPosition.y, ['boost'])
         setBoost()
       } else if (nextCase.classList.contains('snake')) {
         gameOver()
+        return
       } else {
         SNAKE.pop()
         removeClassFromCase( lastSnakePart.x, lastSnakePart.y, ['snake'])
@@ -127,17 +117,6 @@ function getSnakeNextPosition() {
   }
 
   return {x: moveX, y: moveY}
-}
-
-function getInitMap(xLength, yLength) {
-  const map = []
-  for (let i = 0; i < xLength; i++) {
-    map[i] = []
-    for (let j = 0; j < yLength; j++) {
-      map[i][j] = {x: j, y: i}
-    }
-  }
-  return map
 }
 
 function updateMapCase(x, y, newCase) {
@@ -180,9 +159,16 @@ function removeAllChildNodes(parent) {
 }
 
 function gameOver() {
+  // clear interval, auto movement
   clearInterval(GAME_ACTIVE)
+  GAME_ACTIVE = undefined
+
+  // clear keyboard event
+  document.removeEventListener("keydown", keyboardEvent);
+
   const container = document.querySelector('#game');
-  removeAllChildNodes(container);
+  container.innerHTML = ''
+
   initGame()
 }
 
