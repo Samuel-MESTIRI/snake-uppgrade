@@ -1,4 +1,5 @@
-import { initMap } from "./map.";
+import { initMap, updateMapCase, removeClassFromCase, setBoost } from "./map";
+import { getSnakeNextPosition } from "./snake";
 
 const MAP_X_LENGTH = 30
 const MAP_Y_LENGTH = 30
@@ -27,7 +28,7 @@ function initGame() {
   document.addEventListener('keydown', keyboardEvent)
 
   // set boost
-  setBoost()
+  setBoost(MAP_X_LENGTH, MAP_Y_LENGTH)
 }
 
 function keyboardEvent(event) {
@@ -79,14 +80,14 @@ function keyboardEvent(event) {
 function startIntervall() {
   if (!GAME_ACTIVE) {
     GAME_ACTIVE = setInterval(() => {
-      const nextPosition = getSnakeNextPosition()
+      const nextPosition = getSnakeNextPosition(SNAKE, DIRECTION, MAP_X_LENGTH, MAP_Y_LENGTH)
       const nextCase = document.querySelector(`.x${nextPosition.x}.y${nextPosition.y}`)
       const lastSnakePart = SNAKE[SNAKE.length-1]
       
       if (nextCase.classList.contains('boost')) {
         BOOST++
         removeClassFromCase(nextPosition.x, nextPosition.y, ['boost'])
-        setBoost()
+        setBoost(MAP_X_LENGTH, MAP_Y_LENGTH)
       } else if (nextCase.classList.contains('snake')) {
         gameOver()
         return
@@ -102,60 +103,11 @@ function startIntervall() {
   }
 }
 
-function getSnakeNextPosition() {
-  let moveX = SNAKE[0].x + DIRECTION.x
-  let moveY = SNAKE[0].y + DIRECTION.y
-
-  if ((SNAKE[0].x + DIRECTION.x) < 0) {
-    moveX = MAP_X_LENGTH - 1
-  } else if ((SNAKE[0].y + DIRECTION.y) < 0) {
-    moveY = MAP_Y_LENGTH - 1
-  } else if ((SNAKE[0].x + DIRECTION.x) > (MAP_X_LENGTH - 1)) {
-    moveX = 0
-  } else if ((SNAKE[0].y + DIRECTION.y) > (MAP_Y_LENGTH - 1)) {
-    moveY = 0
-  }
-
-  return {x: moveX, y: moveY}
-}
-
-function updateMapCase(x, y, newCase) {
-  const selectedCase = document.querySelector(`.x${x}.y${y}`)
-  selectedCase.classList.add(newCase)
-}
-
-function removeClassFromCase(x, y, classToRemove) {
-  const selectedCase = document.querySelector(`.x${x}.y${y}`)
-  selectedCase.classList.remove(...classToRemove)
-}
-
 function moveSnake(newX, newY) {
   updateMapCase(newX, newY, 'snake')
 
   SNAKE[0].x = newX
   SNAKE[0].y = newY
-}
-
-function setBoost() {
-  let randomCoordinates
-  do {
-    randomCoordinates = getRandomCoordinates()
-  } while (randomCoordinates === [SNAKE[0].x, SNAKE[0].y]);
-
-  updateMapCase(randomCoordinates[0], randomCoordinates[1], 'boost')
-}
-
-function getRandomCoordinates() {
-  return [
-    Math.floor(Math.random() * (MAP_X_LENGTH + 0)),
-    Math.floor(Math.random() * (MAP_Y_LENGTH + 0))
-  ]
-}
-
-function removeAllChildNodes(parent) {
-  while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
-  }
 }
 
 function gameOver() {

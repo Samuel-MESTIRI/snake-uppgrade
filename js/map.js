@@ -16,4 +16,34 @@ function initMap(maxX, maxY, gameId) {
   }
 }
 
-export { initMap }
+function updateMapCase(x, y, newCase) {
+  const selectedCase = document.querySelector(`.x${x}.y${y}`)
+  selectedCase.classList.add(newCase)
+}
+
+function removeClassFromCase(x, y, classToRemove) {
+  const selectedCase = document.querySelector(`.x${x}.y${y}`)
+  selectedCase.classList.remove(...classToRemove)
+}
+
+function setBoost(maxX, mapY) {
+  let randomCoordinates = [0, 0]
+  let randomCase
+  do {
+    randomCoordinates = getRandomCoordinates(maxX, mapY)
+    randomCase = document.querySelector(`.x${randomCoordinates[0]}.y${randomCoordinates[1]}`)
+  } while (randomCase.classList.contains('snake'));
+
+  
+
+  updateMapCase(randomCoordinates[0], randomCoordinates[1], 'boost')
+}
+
+function getRandomCoordinates(maxX, maxY) {
+  return [
+    Math.floor(Math.random() * (maxX + 0)),
+    Math.floor(Math.random() * (maxY + 0))
+  ]
+}
+
+export { initMap, updateMapCase, removeClassFromCase, setBoost }
