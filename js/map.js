@@ -46,4 +46,9 @@ function getRandomCoordinates(maxX, maxY) {
   ]
 }
 
-export { initMap, updateMapCase, removeClassFromCase, setBoost }
+function displayBoost(nb) {
+  const element = document.querySelector('#boost-score')
+  element.innerHTML = nb
+}
+
+export { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost }

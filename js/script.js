@@ -1,13 +1,15 @@
-import { initMap, updateMapCase, removeClassFromCase, setBoost } from "./map";
+import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } from "./map";
 import { getSnakeNextPosition } from "./snake";
 
 const MAP_X_LENGTH = 30
 const MAP_Y_LENGTH = 30
-const SNAKE_SPEED = 60 // millisecondes
-const SNAKE_START_POSITION = [{x: 10, y: 10}]
+const SNAKE_START_POSITION = [{x: 0, y: 0}]
+const BASE_SNAKE_SPEED = 300 // millisecondes
+const POURCENTAGE_SPEED_INCREASE = 5 // 5% speed increase
 
 let BOOST = 0
 let SNAKE
+let SNAKE_SPEED // millisecondes
 let DIRECTION = {x: 1, y: 0} // ex: [0, -1] going up
 let GAME_ACTIVE // intervall 
 
@@ -17,8 +19,12 @@ function initGame() {
   console.log('--- SART ---');
 
   BOOST = 0
+  displayBoost(BOOST)
 
   initMap(MAP_X_LENGTH, MAP_Y_LENGTH, 'game')
+
+  // set snake speed
+  SNAKE_SPEED = JSON.parse(JSON.stringify(BASE_SNAKE_SPEED))
 
   // set snake
   SNAKE = JSON.parse(JSON.stringify(SNAKE_START_POSITION))
@@ -86,6 +92,10 @@ function startIntervall() {
       
       if (nextCase.classList.contains('boost')) {
         BOOST++
+        displayBoost(BOOST)
+
+        speedUp()
+
         removeClassFromCase(nextPosition.x, nextPosition.y, ['boost'])
         setBoost(MAP_X_LENGTH, MAP_Y_LENGTH)
       } else if (nextCase.classList.contains('snake')) {
@@ -101,6 +111,16 @@ function startIntervall() {
       moveSnake(nextPosition.x, nextPosition.y)
     }, SNAKE_SPEED);
   }
+}
+
+function speedUp() {
+  SNAKE_SPEED -= (POURCENTAGE_SPEED_INCREASE * SNAKE_SPEED / 100).toFixed(1)
+  console.log(SNAKE_SPEED);
+
+  clearInterval(GAME_ACTIVE)
+  GAME_ACTIVE = undefined
+
+  startIntervall()
 }
 
 function moveSnake(newX, newY) {
