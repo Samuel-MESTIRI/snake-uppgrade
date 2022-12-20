@@ -3,14 +3,40 @@ function initMap(maxX, maxY, gameId) {
   const game = document.querySelector('#'+gameId)
 
   // create all map cases
-  for (let y = 0; y < maxY; y++) {
+  for (let y = -2; y < maxY+1; y++) {
     const line = document.createElement('div')
     line.classList.add('line')
     game.append(line)
 
-    for (let x = 0; x < maxX; x++) {
+    for (let x = -1; x < maxX+1; x++) {
       const box = document.createElement('div')
-      box.classList.add('box', 'x'+x, 'y'+y)
+      let classToadd = ['box']
+
+      // if left wall 
+      if (x === -1 && y !== -2) {
+        classToadd.push('wall-left')
+      }
+      // if right wall 
+      else if (x === maxX && y !== -2) {
+        classToadd.push('wall-right')
+      }
+      // if  bottom wall
+      else if (y === maxY) {
+        classToadd.push('wall-bottom', 'floor')
+      }
+      // if top wall
+      else if (y === -2 && x !== -1 && x !== maxX) {
+        classToadd.push('wall-top')
+      }
+      else if (y === -1) {
+        classToadd.push('wall')
+      }
+      else if ((x !== -1 && x !== maxX) && (y !== -2 && y !== maxY)) {
+        classToadd.push('floor')
+      }
+
+      box.classList.add(...classToadd, 'x'+x, 'y'+y)
+
       line.append(box)
     }
   }

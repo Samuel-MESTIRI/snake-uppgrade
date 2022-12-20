@@ -2,7 +2,7 @@ import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } f
 import { getSnakeNextPosition } from "./snake";
 
 const MAP_X_LENGTH = 25
-const MAP_Y_LENGTH = 25
+const MAP_Y_LENGTH = 15
 const SNAKE_START_POSITION = [{x: 0, y: 0}]
 const BASE_SNAKE_SPEED = 300 // millisecondes
 const POURCENTAGE_SPEED_INCREASE = 5 // 5% speed increase
@@ -11,6 +11,7 @@ let BOOST = 0
 let SNAKE
 let SNAKE_SPEED // millisecondes
 let DIRECTION = {x: 1, y: 0} // ex: [0, -1] going up
+let EYE_DIRECTION = 'right'
 let GAME_ACTIVE // intervall 
 
 // -----------------------------
@@ -56,11 +57,13 @@ function keyboardEvent(event) {
       if (DIRECTION.x === 1 && DIRECTION.y === 0) break
       DIRECTION.x = -1
       DIRECTION.y = 0
+      EYE_DIRECTION = 'left'
       break;
     case 'ArrowRight':
       if (DIRECTION.x === -1 && DIRECTION.y === 0) break
       DIRECTION.x = 1
       DIRECTION.y = 0
+      EYE_DIRECTION = 'right'
       break;
     case 'Space':
       // pause game
@@ -90,6 +93,7 @@ function startIntervall() {
       const nextCase = document.querySelector(`.x${nextPosition.x}.y${nextPosition.y}`)
       const lastSnakePart = SNAKE[SNAKE.length-1]
       
+      // Si la case suivante est un boost
       if (nextCase.classList.contains('boost')) {
         BOOST++
         displayBoost(BOOST)
@@ -98,12 +102,16 @@ function startIntervall() {
 
         removeClassFromCase(nextPosition.x, nextPosition.y, ['boost'])
         setBoost(MAP_X_LENGTH, MAP_Y_LENGTH)
-      } else if (nextCase.classList.contains('snake')) {
+      }
+      // Sinon si la prochaine case est une case serpent 
+      else if (nextCase.classList.contains('snake')) {
         gameOver()
         return
-      } else {
+      }
+      // Si c'est une autre case 
+      else {
         SNAKE.pop()
-        removeClassFromCase( lastSnakePart.x, lastSnakePart.y, ['snake'])
+        removeClassFromCase(lastSnakePart.x, lastSnakePart.y, ['snake', 'direction-left'])
       }
       
       SNAKE.unshift({x: nextPosition.x, y: nextPosition.y})
@@ -125,6 +133,9 @@ function speedUp() {
 
 function moveSnake(newX, newY) {
   updateMapCase(newX, newY, 'snake')
+  if (EYE_DIRECTION === 'left') {
+    updateMapCase(newX, newY, 'direction-left')
+  }
 
   SNAKE[0].x = newX
   SNAKE[0].y = newY
