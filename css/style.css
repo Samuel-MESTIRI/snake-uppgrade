@@ -1,3 +1,8 @@
+body {
+  height: 100vh;
+  background-color: #3f2832;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -11,16 +16,37 @@
 .box {
   width: 32px;
   height: 32px;
-  background-color: aquamarine;
 }
 
-.snake {
-  background: url("../img/sprite-dungeon-crawler/heroes/knight/sprite_run32.png");
-  background-color: aquamarine;
-  animation-name: sprite; 
-  animation-duration: 1.5s;
-  animation-timing-function: steps(6);
-  animation-iteration-count: infinite;
+.floor {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/floor/floor_2.png");
+}
+.wall {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/wall_1.png");
+}
+.wall-left {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/wall_left.png");
+}
+.wall-right {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/wall_right.png");
+}
+.wall-top {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/wall_bottom.png");
+}
+.wall-bottom {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/wall_bottom.png"), url("../img/sprite-dungeon-crawler/tiles/floor/floor_2.png");
+}
+.corner-t-l {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/corner.png");
+}
+.corner-t-r {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/corner.png");
+}
+.corner-b-l {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/corner.png");
+}
+.corner-b-r {
+  background-image: url("../img/sprite-dungeon-crawler/tiles/wall/used/corner.png");
 }
 
 @keyframes sprite {
@@ -28,8 +54,20 @@
   to { background-position: -192px; }
 }
 
+.snake {
+  background: url("../img/sprite-dungeon-crawler/heroes/knight/knight-run32x32.png"), url("../img/sprite-dungeon-crawler/tiles/floor/floor_2.png");
+  animation-name: sprite; 
+  animation-duration: 1.5s;
+  animation-timing-function: steps(6);
+  animation-iteration-count: infinite;
+}
+
+.direction-left {
+  transform: scaleX(-1);
+}
+
 .boost {
-  background-color: cornflowerblue;
+  background-image: url("../img/sprite-dungeon-crawler/props_itens/used/potion_red.png"), url("../img/sprite-dungeon-crawler/tiles/floor/floor_2.png");
 }
 
 .modal-background {
