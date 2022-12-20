@@ -9,13 +9,23 @@
 }
 
 .box {
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   background-color: aquamarine;
 }
 
 .snake {
-  background-color: darkred;
+  background: url("../img/sprite-dungeon-crawler/heroes/knight/sprite_run32.png");
+  background-color: aquamarine;
+  animation-name: sprite; 
+  animation-duration: 1.5s;
+  animation-timing-function: steps(6);
+  animation-iteration-count: infinite;
+}
+
+@keyframes sprite {
+  from { background-position: 0px; }
+  to { background-position: -192px; }
 }
 
 .boost {
@@ -23,6 +33,7 @@
 }
 
 .modal-background {
+  display: none;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.8);
   top: 0;

@@ -1,8 +1,8 @@
 import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } from "./map";
 import { getSnakeNextPosition } from "./snake";
 
-const MAP_X_LENGTH = 30
-const MAP_Y_LENGTH = 30
+const MAP_X_LENGTH = 25
+const MAP_Y_LENGTH = 25
 const SNAKE_START_POSITION = [{x: 0, y: 0}]
 const BASE_SNAKE_SPEED = 300 // millisecondes
 const POURCENTAGE_SPEED_INCREASE = 5 // 5% speed increase
@@ -143,5 +143,17 @@ function gameOver() {
 
   initGame()
 }
+
+const modalBtn = document.querySelector('#modal-btn')
+const modalBackground = document.querySelector('.modal-background')
+
+modalBtn.addEventListener('click', event => {
+  console.log(event);
+  if (modalBackground.style.display === 'none') {
+    modalBackground.style.display = 'block'
+  } else {
+    modalBackground.style.display = 'none'
+  }
+})
 
 initGame()
