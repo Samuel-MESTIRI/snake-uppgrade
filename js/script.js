@@ -1,11 +1,15 @@
 import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } from "./map.js";
 import { getSnakeNextPosition } from "./snake.js";
+import { setChoices } from './modal.js';
 
 const MAP_X_LENGTH = 25
 const MAP_Y_LENGTH = 15
 const SNAKE_START_POSITION = [{x: 0, y: 0}]
 const BASE_SNAKE_SPEED = 300 // millisecondes
 const POURCENTAGE_SPEED_INCREASE = 5 // 5% speed increase
+const NB_BEFORE_UPGRADE = 3 // every NB_BEFORE_UPGRADE propose upgrade
+let ALL_UPGRADES = []
+setAllUpgrades()
 
 let BOOST = 0
 let SNAKE
@@ -13,6 +17,7 @@ let SNAKE_SPEED // millisecondes
 let DIRECTION = {x: 1, y: 0} // ex: [0, -1] going up
 let EYE_DIRECTION = 'right'
 let GAME_ACTIVE // intervall 
+let IS_MODAL_OPEN = false
 
 // -----------------------------
 
@@ -39,7 +44,7 @@ function initGame() {
 }
 
 function keyboardEvent(event) {
-  if (!event) return false
+  if (!event || IS_MODAL_OPEN)  return false
   console.log('event keyboard now');
 
   switch (event.code) {
@@ -66,11 +71,7 @@ function keyboardEvent(event) {
       EYE_DIRECTION = 'right'
       break;
     case 'Space':
-      // pause game
-      if (GAME_ACTIVE) {
-        clearInterval(GAME_ACTIVE)
-        GAME_ACTIVE = undefined
-      }
+      pauseGame()
       break;
   
     default:
@@ -86,6 +87,13 @@ function keyboardEvent(event) {
   event.preventDefault();
 }
 
+function pauseGame() {
+  if (GAME_ACTIVE) {
+    clearInterval(GAME_ACTIVE)
+    GAME_ACTIVE = undefined
+  }
+}
+
 function startIntervall() {
   if (!GAME_ACTIVE) {
     GAME_ACTIVE = setInterval(() => {
@@ -99,6 +107,10 @@ function startIntervall() {
         displayBoost(BOOST)
 
         speedUp()
+
+        if (BOOST % NB_BEFORE_UPGRADE === 0) {
+          upgrade()
+        }
 
         removeClassFromCase(nextPosition.x, nextPosition.y, ['boost'])
         setBoost(MAP_X_LENGTH, MAP_Y_LENGTH)
@@ -155,16 +167,27 @@ function gameOver() {
   initGame()
 }
 
-const modalBtn = document.querySelector('#modal-btn')
-const modalBackground = document.querySelector('.modal-background')
+function setAllUpgrades() {
+  fetch('http://localhost/snake-uppgrade/data/upgrades.json')
+  .then(response => {
+    return response.json();
+  })
+  .then(data => {
+    ALL_UPGRADES = data['list-of-upgrade']
+  });
+}
 
-modalBtn.addEventListener('click', event => {
-  console.log(event);
-  if (modalBackground.style.display === 'none') {
-    modalBackground.style.display = 'block'
-  } else {
-    modalBackground.style.display = 'none'
-  }
-})
+function upgrade() {
+  pauseGame()
+  IS_MODAL_OPEN = true
+  setChoices(ALL_UPGRADES)
+}
+
+function choiceDone(choice) {
+  IS_MODAL_OPEN = false
+  console.log(choice);
+}
 
 initGame()
+
+export { choiceDone }

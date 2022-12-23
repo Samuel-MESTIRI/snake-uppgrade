@@ -1,0 +1,34 @@
+{
+    "list-of-upgrade": [
+        {
+            "name": "Augmenter la force",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        },
+        {
+            "name": "Augmenter la vitesse",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        },
+        {
+            "name": "Augmenter la magie",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        },
+        {
+            "name": "Augmenter la vision",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        },
+        {
+            "name": "Augmenter la porté",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        },
+        {
+            "name": "Augmenter la dextérité",
+            "description": "Augmente la force du personnage",
+            "img": "lien"
+        }
+    ]
+}

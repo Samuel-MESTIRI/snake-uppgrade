@@ -18,6 +18,10 @@ body {
   height: 32px;
 }
 
+#boost-score {
+  color: white;
+}
+
 .floor {
   background-image: url("../img/sprite-dungeon-crawler/tiles/floor/floor_2.png");
 }
