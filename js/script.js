@@ -1,5 +1,5 @@
-import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } from "./map";
-import { getSnakeNextPosition } from "./snake";
+import { initMap, updateMapCase, removeClassFromCase, setBoost, displayBoost } from "./map.js";
+import { getSnakeNextPosition } from "./snake.js";
 
 const MAP_X_LENGTH = 25
 const MAP_Y_LENGTH = 15
